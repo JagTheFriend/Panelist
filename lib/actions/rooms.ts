@@ -3,7 +3,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { trackDomainEvent } from "@/lib/analytics/posthog-server";
 import type { RoomRole } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { ActionError, isUniqueViolation } from "@/lib/errors";
@@ -95,11 +94,6 @@ export const createRoom = authedClient
       );
     }
 
-    trackDomainEvent(ctx.user, "room created", {
-      room_id: room.id,
-      room_name: room.name,
-    });
-
     redirect(`/rooms/${room.id}/board`);
   });
 
@@ -132,12 +126,6 @@ export const joinRoomByPin = authedClient
       where: { roomId_userId: { roomId: room.id, userId: ctx.user.id } },
       update: { role },
       create: { roomId: room.id, userId: ctx.user.id, role },
-    });
-
-    trackDomainEvent(ctx.user, "room joined", {
-      room_id: room.id,
-      room_name: room.name,
-      joined_role: role,
     });
 
     redirect(`/rooms/${room.id}/board`);

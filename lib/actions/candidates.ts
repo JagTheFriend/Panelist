@@ -1,6 +1,5 @@
 "use server";
 
-import { trackDomainEvent } from "@/lib/analytics/posthog-server";
 import { requirePanelAdminContext, requirePanelStaffContext } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { ActionError, isUniqueViolation } from "@/lib/errors";
@@ -68,17 +67,6 @@ export const addCandidate = authedClient
           `${rollNo} is already in this panel's queue.`,
         );
       });
-
-    trackDomainEvent(
-      { id: ctx.user.id, role: panelCtx.role },
-      "candidate added",
-      {
-        room_id: panelCtx.room.id,
-        panel_id: panelId,
-        panel_name: panelCtx.panel.name,
-        candidate_roll: rollNo,
-      },
-    );
 
     return { id: candidate.id };
   });
@@ -188,49 +176,14 @@ export const setCandidateStatus = authedClient
 
     const existing = await prisma.candidate.findUnique({
       where: { id },
-      select: { panelId: true, rollNo: true },
+      select: { panelId: true },
     });
     if (!existing) {
       throw new ActionError("NOT_FOUND", "Candidate not found.");
     }
-    const panelCtx = await requirePanelStaffContext(
-      existing.panelId,
-      ctx.user.id,
-    );
+    await requirePanelStaffContext(existing.panelId, ctx.user.id);
 
-    const result = await moveCandidate(id, status, index);
-
-    if (result.fromStatus !== result.toStatus) {
-      const eventName =
-        status === "IN_INTERVIEW"
-          ? "interview started"
-          : status === "DONE"
-            ? "interview marked done"
-            : "interview reopened";
-
-      const properties: Record<string, string | number | boolean | null> = {
-        room_id: panelCtx.room.id,
-        panel_id: existing.panelId,
-        candidate_roll: existing.rollNo,
-        from_status: result.fromStatus,
-        to_status: status,
-      };
-
-      if (status === "DONE" && result.candidate.startedAt) {
-        properties.interview_duration_ms =
-          Date.now() - result.candidate.startedAt.getTime();
-      }
-      if (status === "IN_INTERVIEW" && result.candidate.joinedAt) {
-        properties.queue_wait_ms =
-          Date.now() - result.candidate.joinedAt.getTime();
-      }
-
-      trackDomainEvent(
-        { id: ctx.user.id, role: panelCtx.role },
-        eventName,
-        properties,
-      );
-    }
+    await moveCandidate(id, status, index);
 
     return { id, status };
   });
@@ -268,27 +221,14 @@ export const updateCandidate = authedClient
 
     const candidate = await prisma.candidate.findUnique({
       where: { id },
-      select: { panelId: true, rollNo: true },
+      select: { panelId: true },
     });
     if (!candidate) {
       throw new ActionError("NOT_FOUND", "Candidate not found.");
     }
-    const panelCtx = await requirePanelStaffContext(
-      candidate.panelId,
-      ctx.user.id,
-    );
+    await requirePanelStaffContext(candidate.panelId, ctx.user.id);
 
     await prisma.candidate.update({ where: { id }, data: { name } });
-
-    trackDomainEvent(
-      { id: ctx.user.id, role: panelCtx.role },
-      "candidate updated",
-      {
-        room_id: panelCtx.room.id,
-        panel_id: candidate.panelId,
-        candidate_roll: candidate.rollNo,
-      },
-    );
 
     return { id };
   });
@@ -302,29 +242,9 @@ export const removeCandidate = authedClient
     if (!candidate) {
       throw new ActionError("NOT_FOUND", "Candidate not found.");
     }
-    const panelCtx = await requirePanelAdminContext(
-      candidate.panelId,
-      ctx.user.id,
-    );
+    await requirePanelAdminContext(candidate.panelId, ctx.user.id);
 
     await prisma.candidate.delete({ where: { id: candidate.id } });
-
-    const properties: Record<string, string | number | boolean | null> = {
-      room_id: panelCtx.room.id,
-      panel_id: candidate.panelId,
-      candidate_roll: candidate.rollNo,
-      status: candidate.status,
-    };
-    if (candidate.completedAt && candidate.startedAt) {
-      properties.interview_duration_ms =
-        candidate.completedAt.getTime() - candidate.startedAt.getTime();
-    }
-
-    trackDomainEvent(
-      { id: ctx.user.id, role: panelCtx.role },
-      "candidate removed",
-      properties,
-    );
 
     return { id: candidate.id };
   });

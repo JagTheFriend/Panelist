@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-Campus-recruitment panel & interview-queue tracker. Next.js 16 (App Router, PPR/`cacheComponents`), better-auth (Google-only sign-in), Prisma 7 + Postgres, Tailwind v4, next-safe-action, PostHog. Dev server runs on the default Next port (3000, auto-increments when busy); e2e serves on 3110.
+Campus-recruitment panel & interview-queue tracker. Next.js 16 (App Router, PPR/`cacheComponents`), better-auth (Google-only sign-in), Prisma 7 + Postgres, Tailwind v4, next-safe-action. Dev server runs on the default Next port (3000, auto-increments when busy); e2e serves on 3110.
 
 ## Project skills
 

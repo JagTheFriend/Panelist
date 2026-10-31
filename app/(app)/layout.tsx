@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { type ReactNode, Suspense } from "react";
-import { IdentityBridge } from "@/components/identity-bridge";
 import { getCurrentUser } from "@/lib/auth";
 
 export const metadata: Metadata = {
@@ -20,12 +19,7 @@ async function ProtectedShell({ children }: { children: ReactNode }) {
   const user = await getCurrentUser();
   if (!user) redirect("/api/session/clear");
 
-  return (
-    <>
-      <IdentityBridge id={user.id} name={user.name} email={user.email} />
-      {children}
-    </>
-  );
+  return children;
 }
 
 export default function AppLayout({ children }: { children: ReactNode }) {

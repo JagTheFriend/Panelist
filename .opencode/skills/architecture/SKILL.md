@@ -50,4 +50,3 @@ Legacy `/board`, `/panels`, `/admin/*` 308-redirect to `/rooms` (`next.config.ts
 
 - Pages await `params: Promise<...>` and call `await connection()` for dynamic data under PPR.
 - Header exclusivity: `(app)/layout` renders no Header; the room layout renders Header(room); the hub renders its own — exactly one header per page.
-- Identity: `user:<id>` is both the client PostHog distinctId (`components/identity-bridge.tsx`) and the server `trackDomainEvent` distinct id (`lib/analytics/posthog-server.ts`, props `actor_user`/`actor_role`), queued in `after()`.

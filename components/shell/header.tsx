@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import posthog from "posthog-js";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -108,7 +107,6 @@ export function Header({ user, room }: { user: HeaderUser; room: HeaderRoom }) {
     setSigningOut(true);
     try {
       await authClient.signOut();
-      posthog.reset();
       router.push("/join");
       router.refresh();
     } catch {

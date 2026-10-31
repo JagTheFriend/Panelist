@@ -6,7 +6,7 @@ and everyone else joins the room with its code + PIN. Panels are kanban boards �
 candidates wait in a queue, get called for their interview, and move to done.
 
 Built with Next.js 16 (App Router, PPR, Server Actions), better-auth (Google-only
-sign-in), Prisma 7 + Neon, Tailwind v4, next-safe-action, PostHog and Vercel Analytics.
+sign-in), Prisma 7 + Neon, Tailwind v4, next-safe-action and Vercel Analytics.
 
 ## Features
 
@@ -42,9 +42,7 @@ sign-in), Prisma 7 + Neon, Tailwind v4, next-safe-action, PostHog and Vercel Ana
   icon-only nav on phones, edge-to-edge swipeable kanban columns, admin tables that
   scroll inside their card and surface priority columns and actions first, and 44px
   touch targets on every interactive control.
-- **Analytics** — PostHog heatmaps + autocapture (proxied through `/ingest` so no
-  third-party cookies), PostHog **frequency** page views, server-side domain events
-  captured out-of-band with `after()`, plus Vercel Analytics and Speed Insights.
+- **Analytics** — Vercel Analytics and Speed Insights.
 - **SEO** — per-page titles/descriptions, canonical URLs, Open Graph + Twitter
   `summary_large_image` (generated 1200×630 PNG), `WebApplication` JSON-LD,
   `robots.txt` + `sitemap.xml`, and `noindex` on every authenticated route.
@@ -62,7 +60,7 @@ sign-in), Prisma 7 + Neon, Tailwind v4, next-safe-action, PostHog and Vercel Ana
 | Auth       | better-auth 1.7 (Google OAuth, Prisma adapter, DB sessions) |
 | Styling    | Tailwind CSS v4 + design tokens, motion (Framer successor) |
 | DnD       | @dnd-kit |
-| Analytics  | PostHog (JS + Node), Vercel Analytics, Vercel Speed Insights |
+| Analytics  | Vercel Analytics, Vercel Speed Insights |
 | Testing    | Vitest (unit + component), Playwright (e2e), Biome (lint/format) |
 
 ## Getting started
@@ -207,9 +205,6 @@ Key decisions worth knowing:
   next-safe-action and is handled by the client hooks (`useAction`).
 - **Board freshness** is SSR + server actions calling `router.refresh()` — no WebSocket
   layer, no client state duplication, no polling; the server is the source of truth.
-- **PostHog server events** are queued inside `after()` so tracking never delays a
-  response; distinct id is `user:<id>` (matching the client-side `posthog.identify` in
-  IdentityBridge) with room role attached per event.
 
 ## Environment variables
 
@@ -222,7 +217,6 @@ See [`.env.example`](.env.example):
 | `BETTER_AUTH_URL` | base URL of the app (OAuth callbacks), e.g. `http://localhost:3000` — on Vercel a missing/localhost value is replaced by the deployment origin automatically |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth client (empty = sign-in button errors gracefully; use seeded sessions locally) |
 | `NEXT_PUBLIC_APP_URL` | public origin for canonical/OG/sitemap/robots URLs (defaults to the deployment origin on Vercel, `http://localhost:3000` otherwise) |
-| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` / `_KEY` / `_HOST` / `_UI_HOST` | PostHog project key (either name works) + API/UI hosts (empty = no-op) |
 
 ## Deploying (Vercel + Neon + Google)
 
@@ -241,9 +235,6 @@ See [`.env.example`](.env.example):
    The `vercel-build` script runs `prisma generate && prisma migrate deploy && next
    build` (migrations ship in `prisma/migrations`).
 4. Enable Web Analytics and Speed Insights in the Vercel dashboard (no env needed).
-5. Set `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` (and host, if not using the US cloud) if you
-   want heatmaps + frequency analytics; the browser SDK reports through the `/ingest`
-   rewrite in `next.config.ts` for cookie-free tracking.
 
 ## Project layout
 
