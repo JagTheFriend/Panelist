@@ -90,9 +90,9 @@ the raw token on its own is rejected):
 
 | Seed session token   | Account               | Role in the demo room      |
 | --------------------- | --------------------- | -------------------------- |
-| `dev-session-admin`   | `admin@panelops.dev`  | ADMIN                      |
-| `dev-session-member`  | `member@panelops.dev` | USER (2 panels joined)     |
-| `dev-session-outsider`| `outsider@panelops.dev` | not in any room (join-flow testing) |
+| `dev-session-admin`   | `admin@panelist.dev`  | ADMIN                      |
+| `dev-session-member`  | `member@panelist.dev` | USER (2 panels joined)     |
+| `dev-session-outsider`| `outsider@panelist.dev` | not in any room (join-flow testing) |
 
 The e2e suite plants the same signed cookies — no Google round-trip in tests.
 

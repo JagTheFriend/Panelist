@@ -22,5 +22,5 @@ description: Load when touching the Prisma schema, migrations, seeding, or any o
 ## Seed (`prisma/seed.ts`, idempotent)
 
 - Room **Demo Room** — code `DEMO42`, admin PIN `7331`, normal PIN `1234`.
-- Users `admin@` / `member@` / `outsider@panelops.dev` (outsider has **no** membership — for join-flow tests). The member joins only **Web Development + Data Science**; the admin joins all four domains; sample candidates queue on Web Development when empty; stale panels outside the domain list are deactivated.
+- Users `admin@` / `member@` / `outsider@panelist.dev` (outsider has **no** membership — for join-flow tests). The member joins only **Web Development + Data Science**; the admin joins all four domains; sample candidates queue on Web Development when empty; stale panels outside the domain list are deactivated.
 - Session rows store raw tokens `dev-session-{admin,member,outsider,signout}`; `signout` is disposable (e2e sign-out deletes it). **The cookie value must be signed** — the seed prints ready-to-paste signed values (see the `auth-rooms` skill).

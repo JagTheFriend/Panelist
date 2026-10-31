@@ -7,15 +7,15 @@ afterEach(() => {
 
 describe("resolvePublicOrigin", () => {
   it("keeps a non-localhost configured origin", () => {
-    expect(resolvePublicOrigin("https://panelops.example")).toBe(
-      "https://panelops.example",
+    expect(resolvePublicOrigin("https://panelist.example")).toBe(
+      "https://panelist.example",
     );
   });
 
   it("prefers the Vercel production host over a localhost value", () => {
-    vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "panel-ops-three.vercel.app");
+    vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "panelist-three.vercel.app");
     expect(resolvePublicOrigin("http://localhost:3000")).toBe(
-      "https://panel-ops-three.vercel.app",
+      "https://panelist-three.vercel.app",
     );
   });
 

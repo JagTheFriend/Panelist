@@ -18,8 +18,8 @@ export const ROOM_CODE = "DEMO42";
 export const ADMIN_PIN = "7331";
 export const NORMAL_PIN = "1234";
 
-export const ADMIN_EMAIL = "admin@panelops.dev";
-export const MEMBER_EMAIL = "member@panelops.dev";
+export const ADMIN_EMAIL = "admin@panelist.dev";
+export const MEMBER_EMAIL = "member@panelist.dev";
 
 /** Seeded panel that always has candidates in every column. */
 export const SEEDED_PANEL = "Web Development";

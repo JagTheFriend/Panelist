@@ -57,9 +57,9 @@ async function ensureSession(userId: string, token: string) {
 }
 
 async function main() {
-  const admin = await ensureUser("admin@panelops.dev", "Admin Coordinator");
-  const member = await ensureUser("member@panelops.dev", "Priya Panelist");
-  const outsider = await ensureUser("outsider@panelops.dev", "New Signin");
+  const admin = await ensureUser("admin@panelist.dev", "Admin Coordinator");
+  const member = await ensureUser("member@panelist.dev", "Priya Panelist");
+  const outsider = await ensureUser("outsider@panelist.dev", "New Signin");
 
   await ensureSession(admin.id, SESSION_TOKENS.admin);
   await ensureSession(member.id, SESSION_TOKENS.member);
