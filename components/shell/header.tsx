@@ -124,7 +124,7 @@ export function Header({ user, room }: { user: HeaderUser; room: HeaderRoom }) {
             </span>
             <span className="flex flex-col leading-tight">
               <span className="text-sm font-semibold tracking-tight text-ink">
-                PanelOps
+                Panelist
               </span>
               <span
                 className="hidden max-w-[10rem] truncate text-[10px] font-medium tracking-wider text-ink-3 uppercase sm:block"

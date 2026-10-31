@@ -11,7 +11,7 @@ export function resolvePublicOrigin(configured: string | undefined): string {
 
 export const SITE_URL = resolvePublicOrigin(process.env.NEXT_PUBLIC_APP_URL);
 
-export const SITE_NAME = "PanelOps";
+export const SITE_NAME = "Panelist";
 
 export const SITE_DESCRIPTION =
   "Live kanban boards for recruitment rooms: PIN-based access, queues, and interview progress by domain panel.";

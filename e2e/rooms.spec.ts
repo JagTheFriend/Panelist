@@ -101,7 +101,7 @@ test.describe("rooms", () => {
     await expect(page).toHaveURL(/\/rooms\/[^/]+\/board$/);
     await expect(page.getByText("USER", { exact: true }).first()).toBeVisible();
 
-    await page.getByRole("link", { name: /PanelOps/ }).click();
+    await page.getByRole("link", { name: /Panelist/ }).click();
     await expect(page).toHaveURL(/\/rooms$/);
 
     await page.getByLabel("Room code", { exact: true }).fill(ROOM_CODE);

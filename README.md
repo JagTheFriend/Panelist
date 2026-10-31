@@ -1,4 +1,4 @@
-# PanelOps
+# Panelist
 
 A campus-recruitment **panel & interview queue tracker**. Room coordinators create
 *rooms* (each with an admin PIN and a normal PIN), add interview panels inside a room,

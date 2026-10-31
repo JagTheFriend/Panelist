@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: joinDescription,
   alternates: { canonical: "/join" },
   openGraph: {
-    title: "Sign in to PanelOps",
+    title: "Sign in to Panelist",
     description: joinDescription,
     url: "/join",
     siteName: SITE_NAME,
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Sign in to PanelOps",
+    title: "Sign in to Panelist",
     description: joinDescription,
   },
 };
@@ -39,7 +39,7 @@ export default function JoinPage() {
               P
             </span>
             <span className="text-sm font-semibold tracking-tight">
-              PanelOps
+              Panelist
             </span>
           </div>
         </div>

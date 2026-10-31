@@ -73,7 +73,7 @@ export default function HomePage() {
           <span className="flex size-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white shadow-card">
             P
           </span>
-          <span className="text-sm font-semibold tracking-tight">PanelOps</span>
+          <span className="text-sm font-semibold tracking-tight">Panelist</span>
         </div>
         <Link
           href="/join"
@@ -93,7 +93,7 @@ export default function HomePage() {
             Every panel. One live board.
           </h1>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-2 sm:text-lg">
-            PanelOps tracks every domain panel's queue — waiting, live and done
+            Panelist tracks every domain panel's queue — waiting, live and done
             — so the whole room stays in sync.
           </p>
           <div className="mt-7 flex flex-wrap items-center gap-3">

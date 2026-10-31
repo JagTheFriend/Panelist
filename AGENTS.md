@@ -1,4 +1,4 @@
-# oc-panelist — PanelOps
+# oc-panelist — Panelist
 
 <!-- BEGIN:nextjs-agent-rules -->
 

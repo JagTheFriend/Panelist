@@ -7,7 +7,7 @@ export const size = {
 
 export const contentType = "image/png";
 
-export const alt = "PanelOps";
+export const alt = "Panelist";
 
 export default function Image() {
   return new ImageResponse(
