@@ -124,6 +124,10 @@ docker compose up --build -d    # db (:5433) + db-test (:5434) + migrate + app (
   `npm run db:up` runs, so the local dev workflow is unchanged.
 - The one-shot `migrate` service (`npx prisma migrate deploy`) must finish before the
   app starts; re-run it with `docker compose run --rm migrate`.
+- Better Auth and Google OAuth read `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`,
+  `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` from `.env`. Register the redirect URI
+  `http://localhost:3000/api/auth/callback/google` in Google Cloud Console for local
+  sign-in.
 - Seed the containerized database from the host after the first start:
   `npm run db:seed` (uses `localhost:5433`).
 - `NEXT_PUBLIC_*` variables are inlined at build time — set them in `.env` before
