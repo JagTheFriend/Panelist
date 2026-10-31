@@ -1,4 +1,4 @@
-name: panelops
+name: panelist
 
 services:
   db:
