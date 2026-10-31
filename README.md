@@ -115,9 +115,12 @@ Postgres 18 and applies migrations before the app boots.
 
 ```bash
 cp .env.example .env            # set BETTER_AUTH_SECRET as above
-docker compose up --build -d    # db (:5433) + db-test (:5434) + migrate + app (:3000)
+docker compose up --build -d    # db (:5433) + db-test (:5434) + migrate + app (APP_PORT)
 ```
 
+- `APP_PORT` in `.env` is the **host** port the app is published on (default `3000`);
+  the container always listens on `3000`. Set it to a free port when something else on
+  the host already uses 3000 (Dokploy's dashboard does).
 - `docker compose up -d --wait db db-test` starts only the databases — that is what
   `npm run db:up` runs, so the local dev workflow is unchanged.
 - The one-shot `migrate` service (`npx prisma migrate deploy`) must finish before the
@@ -133,8 +136,8 @@ docker compose up --build -d    # db (:5433) + db-test (:5434) + migrate + app (
 - Postgres 18 keeps its data under `/var/lib/postgresql`, so volumes created by the
   old Postgres 17 compose file are not reused; the first start initialises a fresh
   database.
-- The app container is healthchecked on `/` and drains in-flight `after()` work for
-  up to 30 seconds on `SIGTERM`.
+- The app container is healthchecked on `/` and gets up to 30 seconds to finish
+  in-flight requests on `SIGTERM`.
 
 ## Scripts
 
@@ -217,6 +220,7 @@ See [`.env.example`](.env.example):
 | `BETTER_AUTH_URL` | base URL of the app (OAuth callbacks), e.g. `http://localhost:3000` — on Vercel a missing/localhost value is replaced by the deployment origin automatically |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth client (empty = sign-in button errors gracefully; use seeded sessions locally) |
 | `NEXT_PUBLIC_APP_URL` | public origin for canonical/OG/sitemap/robots URLs (defaults to the deployment origin on Vercel, `http://localhost:3000` otherwise) |
+| `APP_PORT` | host port `docker compose` publishes the app on (default `3000`); the container always listens on `3000` |
 
 ## Deploying (Vercel + Neon + Google)
 
@@ -235,6 +239,31 @@ See [`.env.example`](.env.example):
    The `vercel-build` script runs `prisma generate && prisma migrate deploy && next
    build` (migrations ship in `prisma/migrations`).
 4. Enable Web Analytics and Speed Insights in the Vercel dashboard (no env needed).
+
+## Deploying with Docker Compose (Dokploy)
+
+`compose.yml` is self-contained — Postgres, the one-shot `migrate` job, and the app.
+
+1. Create a **Docker Compose** service in Dokploy pointing at this repo.
+2. In **Environment**, set:
+   - `BETTER_AUTH_SECRET` — a fresh `openssl rand -hex 32`
+   - `BETTER_AUTH_URL=https://panelist.iotkiit.in`
+   - `NEXT_PUBLIC_APP_URL=https://panelist.iotkiit.in`
+   - `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`
+   - `APP_PORT=3001` — any free **host** port. Dokploy's dashboard already listens on
+     `3000`, so leaving the default there fails with
+     `Bind for 0.0.0.0:3000 failed: port is already allocated`.
+
+   Dokploy writes these to `.env` and runs
+   `docker compose --env-file .env -f compose.yml up -d --build`.
+3. In **Domains**, add `panelist.iotkiit.in` for the `app` service with container port
+   `3000`. Dokploy injects the `dokploy-network` membership and Traefik labels, so the
+   site is served over HTTPS without exposing a host port.
+4. Add `https://panelist.iotkiit.in/api/auth/callback/google` to the Google OAuth
+   client's authorized redirect URIs.
+5. Deploy. `NEXT_PUBLIC_APP_URL` is baked in at build time; Dokploy's `up --build`
+   picks up changes to it on the next deployment. Named volumes keep Postgres data
+   across redeploys.
 
 ## Project layout
 
