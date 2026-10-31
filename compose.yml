@@ -38,7 +38,6 @@ services:
       start_period: 10s
 
   migrate:
-    image: panelops-migrate:local
     build:
       context: .
       target: migrator
@@ -51,7 +50,6 @@ services:
         condition: service_healthy
 
   app:
-    image: panelops:local
     build:
       context: .
       target: runner
