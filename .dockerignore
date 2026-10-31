@@ -1,0 +1,16 @@
+.git
+.gitignore
+.next
+.vercel
+node_modules
+generated
+coverage
+test-results
+playwright-report
+blob-report
+.env
+.env.*
+*.tsbuildinfo
+npm-debug.log*
+Dockerfile
+compose.yml

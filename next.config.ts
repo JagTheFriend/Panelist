@@ -10,6 +10,7 @@ const posthogAssetsHost = posthogHost.replace(
 );
 
 const nextConfig: NextConfig = {
+  output: process.env.NEXT_OUTPUT === "standalone" ? "standalone" : undefined,
   cacheComponents: true,
   partialPrefetching: true,
   reactCompiler: true,

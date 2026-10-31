@@ -55,7 +55,7 @@ sign-in), Prisma 7 + Neon, Tailwind v4, next-safe-action, PostHog and Vercel Ana
 | ---------- | ------ |
 | Framework  | Next.js 16.4 (App Router, `cacheComponents`/PPR, `proxy.ts`) |
 | Language   | TypeScript (strict) |
-| Database   | PostgreSQL 17 — Neon in prod, Docker locally |
+| Database   | PostgreSQL 18 — Neon in prod, Docker locally |
 | ORM        | Prisma 7 + `@prisma/adapter-pg` driver adapters |
 | Validation | Zod 4 |
 | Server actions | next-safe-action 8 (typed errors, `authedClient` + in-action room asserts) |
@@ -67,7 +67,7 @@ sign-in), Prisma 7 + Neon, Tailwind v4, next-safe-action, PostHog and Vercel Ana
 
 ## Getting started
 
-**Prerequisites:** Node ≥ 20 (developed on 26), Docker, npm.
+**Prerequisites:** Node ≥ 20 (developed on Node 26 LTS), Docker, npm.
 
 ```bash
 npm install                     # runs prisma generate via postinstall
@@ -109,6 +109,31 @@ The e2e suite plants the same signed cookies — no Google round-trip in tests.
 
 `npm run db:seed` is idempotent — re-run it any time to restore this state.
 
+### Running the whole stack with Docker
+
+The multi-stage `Dockerfile` builds the app with Next's standalone output on Node 26
+LTS Alpine, then runs it as the unprivileged `node` user. `compose.yml` wires it to
+Postgres 18 and applies migrations before the app boots.
+
+```bash
+cp .env.example .env            # set BETTER_AUTH_SECRET as above
+docker compose up --build -d    # db (:5433) + db-test (:5434) + migrate + app (:3000)
+```
+
+- `docker compose up -d --wait db db-test` starts only the databases — that is what
+  `npm run db:up` runs, so the local dev workflow is unchanged.
+- The one-shot `migrate` service (`npx prisma migrate deploy`) must finish before the
+  app starts; re-run it with `docker compose run --rm migrate`.
+- Seed the containerized database from the host after the first start:
+  `npm run db:seed` (uses `localhost:5433`).
+- `NEXT_PUBLIC_*` variables are inlined at build time — set them in `.env` before
+  `docker compose up --build`, or pass them as `--build-arg`.
+- Postgres 18 keeps its data under `/var/lib/postgresql`, so volumes created by the
+  old Postgres 17 compose file are not reused; the first start initialises a fresh
+  database.
+- The app container is healthchecked on `/` and drains in-flight `after()` work for
+  up to 30 seconds on `SIGTERM`.
+
 ## Scripts
 
 | Script | What it does |
@@ -119,7 +144,7 @@ The e2e suite plants the same signed cookies — no Google round-trip in tests.
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm test` / `test:watch` / `test:coverage` | Vitest unit + component tests |
 | `npm run test:e2e` / `test:e2e:ui` | Playwright (self-contained, see below) |
-| `npm run db:up` / `db:down` | start/stop dockerized Postgres |
+| `npm run db:up` / `db:down` | start/stop the dockerized dev + test Postgres instances |
 | `npm run db:migrate` / `db:seed` / `db:reset` / `db:studio` | Prisma workflows |
 | `npm run verify` | lint → typecheck → db up/reset → unit tests → build → e2e |
 
@@ -242,4 +267,5 @@ components/
   ui/                      design system primitives
 e2e/                       Playwright specs + self-contained serve/reset scripts
 prisma/                    schema, migrations (0_init), seed (users/rooms/panels)
+Dockerfile, compose.yml    Node 26 standalone image + Postgres 18 stack
 ```

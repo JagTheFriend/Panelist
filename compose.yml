@@ -1,0 +1,88 @@
+name: panelops
+
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ocpanelist
+      POSTGRES_PASSWORD: ocpanelist
+      POSTGRES_DB: ocpanelist
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ocpanelist -d ocpanelist"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  db-test:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ocpanelist
+      POSTGRES_PASSWORD: ocpanelist
+      POSTGRES_DB: ocpanelist_test
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - pgdata-test:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ocpanelist -d ocpanelist_test"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  migrate:
+    image: panelops-migrate:local
+    build:
+      context: .
+      target: migrator
+    restart: "no"
+    environment:
+      DATABASE_URL: postgresql://ocpanelist:ocpanelist@db:5432/ocpanelist?schema=public
+      DATABASE_URL_UNPOOLED: postgresql://ocpanelist:ocpanelist@db:5432/ocpanelist?schema=public
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    image: panelops:local
+    build:
+      context: .
+      target: runner
+      args:
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+        NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: ${NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN:-}
+        NEXT_PUBLIC_POSTHOG_KEY: ${NEXT_PUBLIC_POSTHOG_KEY:-}
+        NEXT_PUBLIC_POSTHOG_HOST: ${NEXT_PUBLIC_POSTHOG_HOST:-}
+        NEXT_PUBLIC_POSTHOG_UI_HOST: ${NEXT_PUBLIC_POSTHOG_UI_HOST:-}
+    restart: unless-stopped
+    init: true
+    stop_grace_period: 30s
+    ports:
+      - "3000:3000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql://ocpanelist:ocpanelist@db:5432/ocpanelist?schema=public
+      DATABASE_URL_UNPOOLED: postgresql://ocpanelist:ocpanelist@db:5432/ocpanelist?schema=public
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET in .env}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  pgdata:
+  pgdata-test:
