@@ -130,10 +130,26 @@ export default function HomePage() {
       </main>
 
       <footer className="relative z-10 border-t border-line/70 py-5">
-        <p className="mx-auto max-w-6xl px-4 text-xs text-ink-3 sm:px-6">
-          Built for recruitment coordinators · Panels update live for everyone
-          in the room.
-        </p>
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 text-xs text-ink-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <p>
+            Built for recruitment coordinators · Panels update live for everyone
+            in the room.
+          </p>
+          <nav aria-label="Legal" className="flex items-center gap-4">
+            <Link
+              href="/privacy"
+              className="inline-flex items-center transition hover:text-ink"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/terms-of-service"
+              className="inline-flex items-center transition hover:text-ink"
+            >
+              Terms of Service
+            </Link>
+          </nav>
+        </div>
       </footer>
     </div>
   );

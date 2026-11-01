@@ -1,5 +1,6 @@
 import { Radio } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SITE_NAME } from "@/lib/site";
 import { GoogleSignIn } from "./google-button";
 
@@ -92,6 +93,23 @@ export default function JoinPage() {
           <p className="text-xs text-ink-3">
             New here? Google creates your account on first sign-in — no extra
             signup step.
+          </p>
+          <p className="text-xs leading-relaxed text-ink-2">
+            By continuing, you agree to our{" "}
+            <Link
+              href="/terms-of-service"
+              className="font-medium text-brand-ink underline underline-offset-2 hover:text-brand"
+            >
+              Terms of Service
+            </Link>{" "}
+            and acknowledge our{" "}
+            <Link
+              href="/privacy"
+              className="font-medium text-brand-ink underline underline-offset-2 hover:text-brand"
+            >
+              Privacy Policy
+            </Link>
+            .
           </p>
         </div>
       </main>

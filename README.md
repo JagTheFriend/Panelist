@@ -6,7 +6,7 @@ and everyone else joins the room with its code + PIN. Panels are kanban boards �
 candidates wait in a queue, get called for their interview, and move to done.
 
 Built with Next.js 16 (App Router, PPR, Server Actions), better-auth (Google-only
-sign-in), Prisma 7 + Neon, Tailwind v4, next-safe-action and Vercel Analytics.
+sign-in), Prisma 7 + PostgreSQL, Tailwind v4, next-safe-action and Vercel Analytics.
 
 ## Features
 
@@ -43,6 +43,9 @@ sign-in), Prisma 7 + Neon, Tailwind v4, next-safe-action and Vercel Analytics.
   scroll inside their card and surface priority columns and actions first, and 44px
   touch targets on every interactive control.
 - **Analytics** — Vercel Analytics and Speed Insights.
+- **Legal pages** — static `/privacy` and `/terms-of-service` with canonical URLs
+  and `WebPage` JSON-LD, linked from the landing footer and sign-in screen;
+  `/privace` permanently redirects to `/privacy`.
 - **SEO** — per-page titles/descriptions, canonical URLs, Open Graph + Twitter
   `summary_large_image` (generated 1200×630 PNG), `WebApplication` JSON-LD,
   `robots.txt` + `sitemap.xml`, and `noindex` on every authenticated route.
@@ -53,7 +56,7 @@ sign-in), Prisma 7 + Neon, Tailwind v4, next-safe-action and Vercel Analytics.
 | ---------- | ------ |
 | Framework  | Next.js 16.4 (App Router, `cacheComponents`/PPR, `proxy.ts`) |
 | Language   | TypeScript (strict) |
-| Database   | PostgreSQL 18 — Neon in prod, Docker locally |
+| Database   | PostgreSQL 18 — Docker on Dokploy, Neon for Vercel |
 | ORM        | Prisma 7 + `@prisma/adapter-pg` driver adapters |
 | Validation | Zod 4 |
 | Server actions | next-safe-action 8 (typed errors, `authedClient` + in-action room asserts) |
@@ -230,7 +233,9 @@ See [`.env.example`](.env.example):
    an OAuth 2.0 Client (type: Web application) with authorized redirect URI
    `https://<your-domain>/api/auth/callback/google` (plus
    `http://localhost:3000/api/auth/callback/google` for local). Copy the client id and
-   secret.
+   secret. On the OAuth consent screen, set the privacy policy to
+   `https://<your-domain>/privacy` and the terms of service to
+   `https://<your-domain>/terms-of-service`.
 3. Push the repo to GitHub and import it in Vercel. Set the env vars above —
    `BETTER_AUTH_URL` and `NEXT_PUBLIC_APP_URL` to the production origin (a missing
    or localhost value falls back to the deployment origin automatically — never
@@ -261,7 +266,9 @@ See [`.env.example`](.env.example):
    membership and Traefik labels, so the site is served over HTTPS without exposing a
    host port.
 4. Add `https://panelist.iotkiit.in/api/auth/callback/google` to the Google OAuth
-   client's authorized redirect URIs.
+   client's authorized redirect URIs, and set the OAuth consent screen's privacy
+   policy to `https://panelist.iotkiit.in/privacy` and terms of service to
+   `https://panelist.iotkiit.in/terms-of-service`.
 5. Deploy. `NEXT_PUBLIC_APP_URL` is baked in at build time; Dokploy's `up --build`
    picks up changes to it on the next deployment. Named volumes keep Postgres data
    across redeploys.
@@ -272,6 +279,7 @@ See [`.env.example`](.env.example):
 app/
   page.tsx                 landing (static, WebApplication JSON-LD)
   join/                    Google sign-in page (+ client button)
+  (legal)/                 privacy + terms-of-service (static, public)
   api/auth/[...all]/       better-auth handler (toNextJsHandler)
   api/session/clear/       stale-cookie escape hatch (clears cookie → /join)
   robots.ts sitemap.ts     crawl rules + sitemap (from NEXT_PUBLIC_APP_URL)
