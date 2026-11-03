@@ -1,5 +1,6 @@
 import { Radio } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { SITE_NAME } from "@/lib/site";
 import { GoogleSignIn } from "./google-button";
@@ -36,8 +37,14 @@ export default function JoinPage() {
         />
         <div className="relative">
           <div className="flex items-center gap-2.5">
-            <span className="flex size-9 items-center justify-center rounded-lg bg-white text-sm font-bold text-ink">
-              P
+            <span className="flex size-9 items-center justify-center rounded-lg bg-white shadow-card">
+              <Image
+                src="/logo.svg"
+                alt=""
+                width={26}
+                height={26}
+                unoptimized
+              />
             </span>
             <span className="text-sm font-semibold tracking-tight">
               Panelist

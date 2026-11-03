@@ -12,6 +12,7 @@ import {
   Settings2,
   Users,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -119,9 +120,15 @@ export function Header({ user, room }: { user: HeaderUser; room: HeaderRoom }) {
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:gap-5 lg:px-8">
         <Link href="/rooms" className="group flex items-center gap-2.5">
           <PendingLinkContent className="flex items-center gap-2.5">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white shadow-card transition-transform group-hover:scale-105">
-              P
-            </span>
+            <Image
+              src="/logo.svg"
+              alt=""
+              width={32}
+              height={32}
+              className="size-8 transition-transform group-hover:scale-105"
+              priority
+              unoptimized
+            />
             <span className="flex flex-col leading-tight">
               <span className="text-sm font-semibold tracking-tight text-ink">
                 Panelist

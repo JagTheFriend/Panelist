@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { SITE_NAME } from "@/lib/site";
@@ -12,9 +13,14 @@ export default function LegalLayout({ children }: { children: ReactNode }) {
             aria-label={SITE_NAME}
             className="flex items-center gap-2.5"
           >
-            <span className="flex size-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white shadow-card">
-              P
-            </span>
+            <Image
+              src="/logo.svg"
+              alt=""
+              width={32}
+              height={32}
+              className="size-8"
+              unoptimized
+            />
             <span className="hidden text-sm font-semibold tracking-tight sm:inline">
               {SITE_NAME}
             </span>

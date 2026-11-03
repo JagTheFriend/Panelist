@@ -1,5 +1,6 @@
 import { ArrowRight, Gauge, Layers3, ShieldCheck, Users } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
@@ -70,9 +71,15 @@ export default function HomePage() {
 
       <header className="relative z-10 mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-2.5">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white shadow-card">
-            P
-          </span>
+          <Image
+            src="/logo.svg"
+            alt=""
+            width={32}
+            height={32}
+            className="size-8"
+            priority
+            unoptimized
+          />
           <span className="text-sm font-semibold tracking-tight">Panelist</span>
         </div>
         <Link

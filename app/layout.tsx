@@ -24,6 +24,13 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
+  icons: {
+    icon: [{ url: "/logo.svg", type: "image/svg+xml", sizes: "any" }],
+    shortcut: ["/logo.svg"],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
   category: "business",
   keywords: [
     "recruitment panel tracker",

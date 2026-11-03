@@ -299,6 +299,9 @@ components/
   shell/header.tsx         room-aware nav, room-code copy + sign-out
   ui/                      design system primitives
 e2e/                       Playwright specs + self-contained serve/reset scripts
+public/
+  logo.svg                 brand mark (browser icon, headers, OG card)
+  apple-touch-icon.png     180×180 iOS home-screen icon
 prisma/                    schema, migrations (0_init), seed (users/rooms/panels)
 Dockerfile, compose.yml    Node 26 standalone image + Postgres 18 stack
 ```

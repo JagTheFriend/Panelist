@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { ImageResponse } from "next/og";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
 
@@ -17,6 +19,12 @@ const chips = [
 ];
 
 export default function Image() {
+  const logo = readFileSync(
+    path.join(process.cwd(), "public/logo.svg"),
+    "base64",
+  );
+  const logoSrc = `data:image/svg+xml;base64,${logo}`;
+
   return new ImageResponse(
     <div
       style={{
@@ -33,22 +41,8 @@ export default function Image() {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-        <div
-          style={{
-            width: 76,
-            height: 76,
-            borderRadius: 20,
-            background: "#4f46e5",
-            color: "#ffffff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 42,
-            fontWeight: 700,
-          }}
-        >
-          P
-        </div>
+        {/* biome-ignore lint/performance/noImgElement: rendered by satori, not by next/image */}
+        <img src={logoSrc} width={76} height={76} alt="" />
         <div
           style={{
             fontSize: 40,
